@@ -1,0 +1,33 @@
+@admin_token = pwd123NoQuotes
+###
+# @name HealthCheck
+GET http://localhost:3000/healthcheck
+
+###
+# @name CreateEvent
+POST http://localhost:3000/event
+Content-Type: application/json
+
+{
+    "name": "asd1 -23123",
+    "date": "2023-04-20T14:00:00Z",
+    "languages": ["English", "French"],
+    "videoQuality": ["720p", "1080p"],
+    "audioQuality": ["Low", "High"],
+    "invitees": ["ameai@wasd.com", "iuhiuh@wasd.com"],
+    "description": "ok"
+}
+
+###
+@event_id = {{CreateEvent.response.body.id}}
+
+###
+# @name GetEvent
+GET http://localhost:3000/event/{{event_id}}
+
+
+###
+# @name DeleteEvent
+DELETE http://localhost:3000/event/{{event_id}}
+API-AUTHENTICATION: {{admin_token}}
+
