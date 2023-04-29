@@ -1,0 +1,166 @@
+definitions:
+  structs.EventData:
+    description: If not provided, `videoQuality` & `audioQuality` default to `["720p"]`
+      & `["Low"]`, respectively. If provided, first item in the list is default.
+    properties:
+      audioQuality:
+        items:
+          type: string
+        type: array
+      date:
+        description: YYYY-MM-DDTHH:MM:SSZ
+        type: string
+      description:
+        maxLength: 512
+        type: string
+      id:
+        type: string
+      invitees:
+        description: '["example@mail.com"]'
+        items:
+          type: string
+        maxItems: 100
+        minItems: 1
+        type: array
+        uniqueItems: true
+      languages:
+        items:
+          type: string
+        minItems: 1
+        type: array
+        uniqueItems: true
+      name:
+        description: 'allowed chars: A-Za-z0-9 _-'
+        maxLength: 255
+        minLength: 1
+        type: string
+      videoQuality:
+        items:
+          type: string
+        type: array
+    required:
+    - date
+    - invitees
+    - languages
+    - name
+    type: object
+  structs.JsonHealthCheckStatus:
+    properties:
+      deployDate:
+        type: string
+      result:
+        type: string
+      version:
+        type: string
+    type: object
+  weberrors.AppError:
+    properties:
+      description:
+        type: string
+      error:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: marek.beck2@gmail.com
+    name: Marek Beck
+  description: An event management service API in Go using Gin framework.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: EventHandler API
+  version: 1.0.0
+paths:
+  /event:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Event Data
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/structs.EventData'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/structs.EventData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/weberrors.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/weberrors.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/weberrors.AppError'
+      summary: Creates event to database
+      tags:
+      - event
+  /event/{id}:
+    delete:
+      parameters:
+      - description: <token_string_goes_here>
+        in: header
+        name: API-AUTHENTICATION
+        required: true
+        type: string
+      - description: Event ID (uuid)
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/weberrors.AppError'
+      summary: Delete event from database
+      tags:
+      - event
+    get:
+      parameters:
+      - description: Event ID (uuid)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/weberrors.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/weberrors.AppError'
+      summary: Retrieves event from database
+      tags:
+      - event
+  /healthcheck:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.JsonHealthCheckStatus'
+      summary: Check health of this service
+      tags:
+      - Health check
+swagger: "2.0"

@@ -41,15 +41,14 @@ func InitApp(app *gin.Engine) {
 
 // CreateEventHandler creates event.
 // @Summary	Creates event to database
-// @Description NOTE: videoQuality & audioQuality default to 720p & Low, respectively if not provided. If provided default value is first in the list.
-// @Tags		event
+// @Tags		Event
 // @Accept json
 // @Produce json
 // @Param event body structs.EventData true "Event Data"
 // @Success	201 {object} structs.EventData
 // @Failure 400,404,500 {object} weberrors.AppError
 // @Router		/event [post]
-var CreateEventHandler = func(ctx *gin.Context) {
+func CreateEventHandler(ctx *gin.Context) {
 	eventData := structs.EventData{}
 	bindError := ctx.ShouldBind(&eventData)
 	if bindError != nil {
@@ -78,13 +77,13 @@ var CreateEventHandler = func(ctx *gin.Context) {
 
 // GetEventHandler retrieves event.
 // @Summary	Retrieves event from database
-// @Tags		event
+// @Tags		Event
 // @Param id path string true "Event ID (uuid)"
 // @Produce json
 // @Success	200
 // @Failure 404,500 {object} weberrors.AppError
 // @Router		/event/{id} [get]
-var GetEventHandler = func(ctx *gin.Context) {
+func GetEventHandler(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if !validations.CheckUuidFormat(id) {
 		utils.AppendContextError(ctx, &weberrors.NotFound)
@@ -104,12 +103,13 @@ var GetEventHandler = func(ctx *gin.Context) {
 
 // DeleteEventHandler removes event.
 // @Summary	Delete event from database
-// @Tags		event
+// @Tags		Event
+// @Param API-AUTHENTICATION header 	string 	true 	"<token string goes here>"
 // @Param id path string true "Event ID (uuid)"
 // @Success	204
 // @Failure 500 {object} weberrors.AppError
 // @Router		/event/{id} [delete]
-var DeleteEventHandler = func(ctx *gin.Context) {
+func DeleteEventHandler(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 	id := ctx.Param("id")
 	if !validations.CheckUuidFormat(id) {
@@ -124,12 +124,12 @@ var DeleteEventHandler = func(ctx *gin.Context) {
 }
 
 // HealthCheckHandler checks the status of the server.
-// @Summary	Check health of this service
+// @Summary	Checks health of this service
 // @Tags		Health check
 // @Produce	json
 // @Success	200	{object}	structs.JsonHealthCheckStatus
 // @Router		/healthcheck [get]
-var HealthCheckHandler = func(ctx *gin.Context) {
+func HealthCheckHandler(ctx *gin.Context) {
 	var status structs.JsonHealthCheckStatus
 	status.Result = "ok"
 	status.Version = os.Getenv("COMMIT_TAG")     // would be set in pipeline
