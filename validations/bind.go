@@ -8,31 +8,29 @@ import (
 )
 
 var BindCustomValidators = func() {
+	customValidations := []struct {
+		FunctionTag string
+		Function    validator.Func
+	}{
+		{"checkEventName", CheckEventNameValid},
+		{"checkVideoQuality", CheckVideoQuality},
+		{"checkAudioQuality", CheckAudioQuality},
+		{"checkEmail", CheckEmailValid},
+		{"checkTimeFieldFormat", CheckTimeFieldFormat},
+	}
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
-		err := v.RegisterValidation("checkEventName", CheckEventNameValid)
-		if err != nil {
-			log.Logger.Error().
-				Msgf("Failed to register checkEventName validation: %v", err)
-		}
-		err = v.RegisterValidation("checkVideoQuality", CheckVideoQuality)
-		if err != nil {
-			log.Logger.Error().
-				Msgf("Failed to register checkVideoQuality validation: %v", err)
-		}
-		err = v.RegisterValidation("checkAudioQuality", CheckAudioQuality)
-		if err != nil {
-			log.Logger.Error().
-				Msgf("Failed to register checkAudioQuality validation: %v", err)
-		}
-		err = v.RegisterValidation("checkEmail", CheckEmailValid)
-		if err != nil {
-			log.Logger.Error().
-				Msgf("Failed to register checkEmail validation: %v", err)
-		}
-		err = v.RegisterValidation("checkTimeFieldFormat", CheckTimeFieldFormat)
-		if err != nil {
-			log.Logger.Error().
-				Msgf("Failed to register checkTimeFieldFormat validation: %v", err)
+		for _, validationDeclaration := range customValidations {
+			err := v.RegisterValidation(
+				validationDeclaration.FunctionTag,
+				validationDeclaration.Function,
+			)
+			if err != nil {
+				log.Logger.Error().
+					Msgf("Failed to register custom validation `%v` - %v",
+						validationDeclaration.FunctionTag,
+						err,
+					)
+			}
 		}
 	}
 }

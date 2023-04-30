@@ -1,7 +1,7 @@
 package models
 
 // @Description If not provided, `videoQuality` & `audioQuality` default to `["720p"]` & `["Low"]`, respectively.
-// @Description If provided, first item in the list is event default.
+// @Description If provided, first item in the list is event's default quality.
 type EventData struct {
 	Id string `json:"-"`
 	//allowed chars: A-Za-z0-9 _-

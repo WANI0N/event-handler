@@ -1,4 +1,5 @@
 @admin_token = pwd123NoQuotes
+
 ###
 # @name HealthCheck
 GET http://localhost:3000/healthcheck
@@ -28,7 +29,6 @@ Content-Type: application/json
 ###
 # @name GetEvent
 GET http://localhost:3000/event/{{event_id}}
-
 
 ###
 # @name DeleteEvent

@@ -150,7 +150,7 @@
     },
     "definitions": {
         "models.EventData": {
-            "description": "If not provided, `videoQuality` \u0026 `audioQuality` default to `[\"720p\"]` \u0026 `[\"Low\"]`, respectively. If provided, first item in the list is event default.",
+            "description": "If not provided, `videoQuality` \u0026 `audioQuality` default to `[\"720p\"]` \u0026 `[\"Low\"]`, respectively. If provided, first item in the list is event's default quality.",
             "type": "object",
             "required": [
                 "date",

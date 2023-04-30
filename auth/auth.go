@@ -4,11 +4,12 @@ import (
 	"app/utils"
 	"app/weberrors"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
-var adminToken = utils.GetEnvOrDefault("ADMIN_TOKEN", "admin_token_string")
+var adminToken = os.Getenv("ADMIN_TOKEN")
 
 func Middleware() gin.HandlerFunc {
 	return func(gctx *gin.Context) {

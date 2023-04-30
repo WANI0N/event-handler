@@ -25,11 +25,11 @@ var CheckAudioQuality validator.Func = func(fl validator.FieldLevel) bool {
 		return true
 	}
 	for _, v := range list {
+
 		if !slices.Contains(utils.ALLOWED_AUDIO, v) {
 			return false
 		}
 	}
-
 	return true
 }
 
@@ -43,7 +43,6 @@ var CheckVideoQuality validator.Func = func(fl validator.FieldLevel) bool {
 			return false
 		}
 	}
-
 	return true
 }
 

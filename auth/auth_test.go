@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var adminTokenTestString = "admin_token_string"
+
 var MiddlewareTestCases = []struct {
 	description      string
 	adminToken       string
@@ -33,6 +35,8 @@ var MiddlewareTestCases = []struct {
 }
 
 func TestMiddleware(t *testing.T) {
+	originalToken := adminToken
+	adminToken = adminTokenTestString
 	for _, testCase := range MiddlewareTestCases {
 		t.Run(testCase.description, func(t *testing.T) {
 			r := gin.New()
@@ -57,4 +61,5 @@ func TestMiddleware(t *testing.T) {
 			res.JSON().Equal(testCase.expectedResponse)
 		})
 	}
+	adminToken = originalToken
 }

@@ -87,6 +87,12 @@ var eventDataAsJsonString = `{
 	"invitees": ["example1@gmail.com", "example2@gmail.com"],
 	"description": "A short description of the event"
 }`
+
+var eventRespDataAsStruct = models.EventResponseData{
+	Id:        "event-id-string",
+	EventData: eventDataAsStruct,
+}
+
 var eventDataAsStruct = models.EventData{
 	Name:         "My Event",
 	Timestamp:    "2023-04-20T14:00:00Z",
@@ -95,11 +101,6 @@ var eventDataAsStruct = models.EventData{
 	AudioQuality: []string{"High", "Low"},
 	Invitees:     []string{"example1@gmail.com", "example2@gmail.com"},
 	Description:  "A short description of the event",
-}
-
-var eventRespDataAsStruct = models.EventResponseData{
-	Id:        "event-id-string",
-	EventData: eventDataAsStruct,
 }
 
 var GetEventTestCases = []struct {
