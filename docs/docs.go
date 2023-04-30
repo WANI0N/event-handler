@@ -54,12 +54,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/weberrors.AppError"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/weberrors.AppError"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
