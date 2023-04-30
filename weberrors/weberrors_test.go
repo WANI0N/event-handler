@@ -25,7 +25,7 @@ var ChangeDescReturnsNewDescTestCases = []struct {
 	},
 }
 
-func TestChangeDescReturnsNewDesc(t *testing.T) {
+func TestChangeDesc(t *testing.T) {
 	for _, testCase := range ChangeDescReturnsNewDescTestCases {
 		t.Run(testCase.Description, func(t *testing.T) {
 			exp_err := fmt.Errorf("%v-%v", ValidationErrorName, testCase.ExpectedDesc)

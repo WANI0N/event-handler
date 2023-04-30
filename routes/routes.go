@@ -33,7 +33,7 @@ func InitApp(app *gin.Engine) {
 	adminGroup.DELETE("/event/:id", DeleteEventHandler)
 
 	app.NoRoute(func(ctx *gin.Context) {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "NotFound", "description": ""})
+		utils.AppendContextError(ctx, &weberrors.RouteNotFoundError)
 	})
 	validations.BindCustomValidators()
 }
@@ -45,7 +45,7 @@ func InitApp(app *gin.Engine) {
 // @Produce json
 // @Param event body models.EventData true "Event Data"
 // @Success	201 {object} models.EventResponseData
-// @Failure 400,404,500 {object} weberrors.AppError
+// @Failure 400,500 {object} weberrors.AppError
 // @Router		/event [post]
 func CreateEventHandler(ctx *gin.Context) {
 	eventData := models.EventData{}

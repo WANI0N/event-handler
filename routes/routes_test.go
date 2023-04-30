@@ -50,6 +50,17 @@ func TestHealthCheckRoute(t *testing.T) {
 	})
 }
 
+func TestNoRoute(t *testing.T) {
+	t.Run("Check no route response", func(t *testing.T) {
+		testClient := testClient(t)
+		res := testClient.GET("/non-existent-route").
+			Expect()
+		res.Status(http.StatusNotFound)
+		res.Header("Content-type").Contains("application/json")
+		res.JSON().Equal(weberrors.ParseAppError(&weberrors.RouteNotFoundError))
+	})
+}
+
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 func getRandomAlphaNum(length int) string {
@@ -327,11 +338,17 @@ var DeleteEventTestCases = []struct {
 		expectedStatus:                 http.StatusNoContent,
 	},
 	{
-		description:                    "Fail - Unauthorized",
-		submitIdPathParam:              "1",
-		adminToken:                     "invalid_admin_token",
-		validationsCheckUuidFormatResp: true,
-		expectedStatus:                 http.StatusUnauthorized,
+		description:                    "Invalid uuid",
+		adminToken:                     utils.GetEnvOrDefault("ADMIN_TOKEN", "admin_token_string"),
+		validationsCheckUuidFormatResp: false,
+		submitIdPathParam:              "invalid-uuid",
+		expectedStatus:                 http.StatusNoContent,
+	},
+	{
+		description:       "Fail - Unauthorized - invalid token",
+		submitIdPathParam: "any-string",
+		adminToken:        "invalid_admin_token",
+		expectedStatus:    http.StatusUnauthorized,
 		expectedResp: &weberrors.AppError{
 			ErrorName:   http.StatusText(http.StatusUnauthorized),
 			Description: "invalid admin token",

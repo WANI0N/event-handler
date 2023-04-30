@@ -22,7 +22,16 @@ const NotFoundError = "NotFoundError"
 const FieldErrorDescription = "Field `%v` %v"
 const InvalidJsonPayloadDesc = "Invalid JSON payload."
 const ResourceNotFoundErrorDesc = "The requested resource could not be found."
+const RouteNotFoundErrorDesc = "Route does not exist."
 const InternalServerDesc = "Internal Server Error."
+
+var RouteNotFoundError = AppErrorWithCode{
+	Code: http.StatusNotFound,
+	AppError: AppError{
+		ErrorName:   NotFoundError,
+		Description: RouteNotFoundErrorDesc,
+	},
+}
 
 var ValidationError = AppErrorWithCode{
 	Code: http.StatusBadRequest,

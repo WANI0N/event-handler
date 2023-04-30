@@ -4,6 +4,10 @@
 GET http://localhost:3000/healthcheck
 
 ###
+# @name NoRoute
+GET http://localhost:3000/non-existent-endpoint
+
+###
 # @name CreateEvent
 POST http://localhost:3000/event
 Content-Type: application/json

@@ -144,9 +144,11 @@ func TestGetEvent(t *testing.T) {
 var CreateEventTestCases = []struct {
 	description                     string
 	getJsonStringFromStructMockResp string
+	getJsonStringFromStructMockErr  error
 	innitialCache                   []KeyValuePair
 	submitPayload                   models.EventData
 	expectedCache                   []KeyValuePair
+	expectRespId                    bool
 	expectedError                   error
 }{
 	{
@@ -159,6 +161,7 @@ var CreateEventTestCases = []struct {
 		},
 		getJsonStringFromStructMockResp: eventDataAsJsonString,
 		submitPayload:                   eventDataAsStruct,
+		expectRespId:                    true,
 		expectedCache: []KeyValuePair{
 			{
 				key:   "key-to-replace-with-uuid",
@@ -169,6 +172,12 @@ var CreateEventTestCases = []struct {
 				value: "content",
 			},
 		},
+	},
+	{
+		description:                    "Fail - Json build fail",
+		submitPayload:                  eventDataAsStruct,
+		getJsonStringFromStructMockErr: errors.New("any error"),
+		expectedError:                  errors.New("any error"),
 	},
 }
 
@@ -182,22 +191,27 @@ func TestCreateEvent(t *testing.T) {
 				convertedData.Id = ""
 				testCase.submitPayload.Id = ""
 				assert.Equal(t, testCase.submitPayload, convertedData)
-				return testCase.getJsonStringFromStructMockResp, nil
+				return testCase.getJsonStringFromStructMockResp, testCase.getJsonStringFromStructMockErr
 			}
-
 			insertDataToCache(redisClient, testCase.innitialCache)
 
 			respId, err := CreateEvent(testCase.submitPayload)
 
-			_, uuIderr := uuid.Parse(respId)
-			assert.Nil(t, uuIderr)
+			if testCase.expectRespId {
+				_, uuIderr := uuid.Parse(respId)
+				assert.Nil(t, uuIderr)
+			} else {
+				assert.Empty(t, respId)
+			}
 			assert.Equal(t, testCase.expectedError, err)
-			testCase.expectedCache[0].key = respId
-			cacheContents := retrieveDataFromCache(redisClient)
-			assert.Equal(t,
-				sortDataByKey(testCase.expectedCache),
-				sortDataByKey(cacheContents),
-			)
+			if len(testCase.expectedCache) > 0 {
+				testCase.expectedCache[0].key = respId
+				cacheContents := retrieveDataFromCache(redisClient)
+				assert.Equal(t,
+					sortDataByKey(testCase.expectedCache),
+					sortDataByKey(cacheContents),
+				)
+			}
 		})
 	}
 }
