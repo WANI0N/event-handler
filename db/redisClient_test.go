@@ -1,7 +1,7 @@
 package db
 
 import (
-	"app/structs"
+	"app/models"
 	"app/utils"
 	"errors"
 	"sort"
@@ -87,8 +87,7 @@ var eventDataAsJsonString = `{
 	"invitees": ["example1@gmail.com", "example2@gmail.com"],
 	"description": "A short description of the event"
 }`
-var eventDataAsStruct = structs.EventData{
-	Id:           "event-id-string",
+var eventDataAsStruct = models.EventData{
 	Name:         "My Event",
 	Timestamp:    "2023-04-20T14:00:00Z",
 	Languages:    []string{"English", "French"},
@@ -98,24 +97,29 @@ var eventDataAsStruct = structs.EventData{
 	Description:  "A short description of the event",
 }
 
+var eventRespDataAsStruct = models.EventResponseData{
+	Id:        "event-id-string",
+	EventData: eventDataAsStruct,
+}
+
 var GetEventTestCases = []struct {
 	description   string
 	setupRedis    bool
 	innitialCache []KeyValuePair
 	submitId      string
-	expectedResp  structs.EventData
+	expectedResp  models.EventResponseData
 	expectedError error
 }{
 	{
 		description: "Success",
 		innitialCache: []KeyValuePair{
 			{
-				key:   "id-to-find",
+				key:   "event-id-string",
 				value: eventDataAsJsonString,
 			},
 		},
-		submitId:     "id-to-find",
-		expectedResp: eventDataAsStruct,
+		submitId:     "event-id-string",
+		expectedResp: eventRespDataAsStruct,
 	},
 	{
 		description:   "Fail - not found",
@@ -141,7 +145,7 @@ var CreateEventTestCases = []struct {
 	description                     string
 	getJsonStringFromStructMockResp string
 	innitialCache                   []KeyValuePair
-	submitPayload                   structs.EventData
+	submitPayload                   models.EventData
 	expectedCache                   []KeyValuePair
 	expectedError                   error
 }{
@@ -174,7 +178,7 @@ func TestCreateEvent(t *testing.T) {
 			setup()
 			defer teardown()
 			utils.GetJsonStringFromStruct = func(data interface{}) (string, error) {
-				convertedData := data.(structs.EventData)
+				convertedData := data.(models.EventData)
 				convertedData.Id = ""
 				testCase.submitPayload.Id = ""
 				assert.Equal(t, testCase.submitPayload, convertedData)

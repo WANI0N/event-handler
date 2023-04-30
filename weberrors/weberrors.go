@@ -14,24 +14,6 @@ func (e *AppErrorWithCode) Error() string {
 	return fmt.Sprintf("%v-%v", e.ErrorName, e.Description)
 }
 
-var getErrorReason = func(key string) string {
-	return AvailableErrorReasons[key]
-}
-
-func (e *AppError) ModifyDesc(fieldName, key string) *AppError {
-	reason := getErrorReason(key)
-	var err = *e
-	err.Description = strings.TrimSpace(fmt.Sprintf(e.Description, fieldName, reason))
-	err.Description += "."
-	return &err
-}
-
-func (e *AppErrorWithCode) ModifyDesc(fieldName, key string) error {
-	var err = *e
-	err.AppError = *err.AppError.ModifyDesc(fieldName, key)
-	return &err
-}
-
 func (e *AppErrorWithCode) ChangeDesc(newDescription string) error {
 	var err = *e
 

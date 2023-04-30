@@ -9,16 +9,6 @@ type AppError struct {
 	Description string `json:"description"`
 }
 
-// func (a *AppError) Json() []byte {
-// 	b, _ := json.Marshal(a)
-// 	return b
-// }
-
-// func (a *AppError) String() string {
-// 	j := a.Json()
-// 	return string(j)
-// }
-
 type AppErrorWithCode struct {
 	Code int `json:"code"`
 	AppError
@@ -64,15 +54,4 @@ var InternalError = AppErrorWithCode{
 		ErrorName:   InternalServerError,
 		Description: InternalServerDesc,
 	},
-}
-
-var AvailableErrorReasons = map[string]string{
-	"len":  "value is too long",
-	"inv":  "value is invalid",
-	"req":  "is required",
-	"dup":  "already exists",
-	"dupv": "has duplicate values",
-	"miss": "value is missing",
-	"inc":  "value is incorrect",
-	"big":  "value is too big",
 }

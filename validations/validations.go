@@ -19,15 +19,13 @@ var GetBindErrors = func(submitErrors error) error {
 	return nil
 }
 
-var allowedAudio = []string{"Low", "Mid", "High"}
-
 var CheckAudioQuality validator.Func = func(fl validator.FieldLevel) bool {
 	list := fl.Field().Interface().([]string)
 	if len(list) == 0 {
 		return true
 	}
 	for _, v := range list {
-		if !slices.Contains(allowedAudio, v) {
+		if !slices.Contains(utils.ALLOWED_AUDIO, v) {
 			return false
 		}
 	}
@@ -35,15 +33,13 @@ var CheckAudioQuality validator.Func = func(fl validator.FieldLevel) bool {
 	return true
 }
 
-var allowedResolutions = []string{"720p", "1080p", "1440p", "2160p"}
-
 var CheckVideoQuality validator.Func = func(fl validator.FieldLevel) bool {
 	list := fl.Field().Interface().([]string)
 	if len(list) == 0 {
 		return true
 	}
 	for _, v := range list {
-		if !slices.Contains(allowedResolutions, v) {
+		if !slices.Contains(utils.ALLOWED_RESOLUTION, v) {
 			return false
 		}
 	}

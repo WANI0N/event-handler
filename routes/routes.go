@@ -4,12 +4,11 @@ import (
 	"app/auth"
 	"app/db"
 	lg "app/logging"
-	"app/structs"
+	"app/models"
 	"app/utils"
 	"app/validations"
 	"app/weberrors"
 	"net/http"
-	"os"
 
 	_ "app/docs"
 
@@ -44,12 +43,12 @@ func InitApp(app *gin.Engine) {
 // @Tags		Event
 // @Accept json
 // @Produce json
-// @Param event body structs.EventData true "Event Data"
-// @Success	201 {object} structs.EventData
+// @Param event body models.EventData true "Event Data"
+// @Success	201 {object} models.EventResponseData
 // @Failure 400,404,500 {object} weberrors.AppError
 // @Router		/event [post]
 func CreateEventHandler(ctx *gin.Context) {
-	eventData := structs.EventData{}
+	eventData := models.EventData{}
 	bindError := ctx.ShouldBind(&eventData)
 	if bindError != nil {
 		if parsedErr := validations.GetBindErrors(bindError); parsedErr != nil {
@@ -71,8 +70,10 @@ func CreateEventHandler(ctx *gin.Context) {
 		utils.AppendContextError(ctx, &weberrors.InternalError)
 		return
 	}
-	eventData.Id = id
-	ctx.JSON(http.StatusCreated, eventData)
+	ctx.JSON(http.StatusCreated, models.EventResponseData{
+		Id:        id,
+		EventData: eventData,
+	})
 }
 
 // GetEventHandler retrieves event.
@@ -80,13 +81,14 @@ func CreateEventHandler(ctx *gin.Context) {
 // @Tags		Event
 // @Param id path string true "Event ID (uuid)"
 // @Produce json
-// @Success	200
+// @Success	200 {object} models.EventResponseData
 // @Failure 404,500 {object} weberrors.AppError
 // @Router		/event/{id} [get]
 func GetEventHandler(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if !validations.CheckUuidFormat(id) {
 		utils.AppendContextError(ctx, &weberrors.NotFound)
+		// utils.AppendContextError(ctx, weberrors.ValidationError.ModifyDesc("id", "inv"))
 		return
 	}
 	response, err := db.GetEvent(id)
@@ -127,12 +129,12 @@ func DeleteEventHandler(ctx *gin.Context) {
 // @Summary	Checks health of this service
 // @Tags		Health check
 // @Produce	json
-// @Success	200	{object}	structs.JsonHealthCheckStatus
+// @Success	200	{object}	models.JsonHealthCheckStatus
 // @Router		/healthcheck [get]
 func HealthCheckHandler(ctx *gin.Context) {
-	var status structs.JsonHealthCheckStatus
+	var status models.JsonHealthCheckStatus
 	status.Result = "ok"
-	status.Version = os.Getenv("COMMIT_TAG")     // would be set in pipeline
-	status.DeployDate = os.Getenv("DEPLOY_DATE") // would be set in pipeline
+	status.Version = utils.GetEnvOrDefault("COMMIT_TAG", "unset")     // would be set in pipeline
+	status.DeployDate = utils.GetEnvOrDefault("DEPLOY_DATE", "unset") // would be set in pipeline
 	ctx.JSON(http.StatusOK, status)
 }

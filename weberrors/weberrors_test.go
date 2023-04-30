@@ -8,38 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var ModifyDescTestCases = []struct {
-	Description    string
-	Reason         string
-	SubmitField    string
-	ExpectedResult error
-}{
-	{
-		Description:    "Formating is done correctly",
-		Reason:         "appended-error-reason",
-		SubmitField:    "field-key",
-		ExpectedResult: fmt.Errorf("%v-%v", ValidationErrorName, "Field `field-key` appended-error-reason."),
-	},
-	{
-		Description:    "Trailing spaces are trimmed correctly",
-		SubmitField:    "field-key",
-		ExpectedResult: fmt.Errorf("%v-%v", ValidationErrorName, "Field `field-key`."),
-	},
-}
-
-func TestModifyDescReturnsNewStruct(t *testing.T) {
-	for _, testCase := range ModifyDescTestCases {
-		t.Run(testCase.Description, func(t *testing.T) {
-			getErrorReason = func(key string) string {
-				return testCase.Reason
-			}
-			actErr := ValidationError.ModifyDesc(testCase.SubmitField, "")
-			assert.Equal(t, testCase.ExpectedResult.Error(), actErr.Error())
-		})
-	}
-
-}
-
 var ChangeDescReturnsNewDescTestCases = []struct {
 	Description  string
 	SubmitDesc   string

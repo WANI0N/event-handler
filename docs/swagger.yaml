@@ -1,22 +1,27 @@
 definitions:
-  structs.EventData:
+  models.EventData:
     description: If not provided, `videoQuality` & `audioQuality` default to `["720p"]`
-      & `["Low"]`, respectively. If provided, first item in the list is default.
+      & `["Low"]`, respectively. If provided, first item in the list is event default.
     properties:
       audioQuality:
+        example:
+        - Low
+        - Mid
+        - High
         items:
           type: string
         type: array
+        uniqueItems: true
       date:
         description: YYYY-MM-DDTHH:MM:SSZ
+        example: "2006-01-02T15:04:05Z"
         type: string
       description:
         maxLength: 512
         type: string
-      id:
-        type: string
       invitees:
-        description: '["example@mail.com"]'
+        example:
+        - example@mail.com
         items:
           type: string
         maxItems: 100
@@ -24,6 +29,9 @@ definitions:
         type: array
         uniqueItems: true
       languages:
+        example:
+        - English
+        - French
         items:
           type: string
         minItems: 1
@@ -31,20 +39,88 @@ definitions:
         uniqueItems: true
       name:
         description: 'allowed chars: A-Za-z0-9 _-'
+        example: A event-Name3_x
         maxLength: 255
         minLength: 1
         type: string
       videoQuality:
+        example:
+        - 720p
+        - 1080p
+        - 1440p
+        - 2160p
         items:
           type: string
         type: array
+        uniqueItems: true
     required:
     - date
     - invitees
     - languages
     - name
     type: object
-  structs.JsonHealthCheckStatus:
+  models.EventResponseData:
+    properties:
+      audioQuality:
+        example:
+        - Low
+        - Mid
+        - High
+        items:
+          type: string
+        type: array
+        uniqueItems: true
+      date:
+        description: YYYY-MM-DDTHH:MM:SSZ
+        example: "2006-01-02T15:04:05Z"
+        type: string
+      description:
+        maxLength: 512
+        type: string
+      id:
+        example: db6bed50-7172-4051-86ab-d1e90705c692
+        type: string
+      invitees:
+        example:
+        - example@mail.com
+        items:
+          type: string
+        maxItems: 100
+        minItems: 1
+        type: array
+        uniqueItems: true
+      languages:
+        example:
+        - English
+        - French
+        items:
+          type: string
+        minItems: 1
+        type: array
+        uniqueItems: true
+      name:
+        description: 'allowed chars: A-Za-z0-9 _-'
+        example: A event-Name3_x
+        maxLength: 255
+        minLength: 1
+        type: string
+      videoQuality:
+        example:
+        - 720p
+        - 1080p
+        - 1440p
+        - 2160p
+        items:
+          type: string
+        type: array
+        uniqueItems: true
+    required:
+    - date
+    - invitees
+    - languages
+    - name
+    type: object
+  models.JsonHealthCheckStatus:
     properties:
       deployDate:
         type: string
@@ -82,14 +158,14 @@ paths:
         name: event
         required: true
         schema:
-          $ref: '#/definitions/structs.EventData'
+          $ref: '#/definitions/models.EventData'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/structs.EventData'
+            $ref: '#/definitions/models.EventResponseData'
         "400":
           description: Bad Request
           schema:
@@ -104,11 +180,11 @@ paths:
             $ref: '#/definitions/weberrors.AppError'
       summary: Creates event to database
       tags:
-      - event
+      - Event
   /event/{id}:
     delete:
       parameters:
-      - description: <token_string_goes_here>
+      - description: <token string goes here>
         in: header
         name: API-AUTHENTICATION
         required: true
@@ -127,7 +203,7 @@ paths:
             $ref: '#/definitions/weberrors.AppError'
       summary: Delete event from database
       tags:
-      - event
+      - Event
     get:
       parameters:
       - description: Event ID (uuid)
@@ -140,6 +216,8 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/models.EventResponseData'
         "404":
           description: Not Found
           schema:
@@ -150,7 +228,7 @@ paths:
             $ref: '#/definitions/weberrors.AppError'
       summary: Retrieves event from database
       tags:
-      - event
+      - Event
   /healthcheck:
     get:
       produces:
@@ -159,8 +237,8 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/structs.JsonHealthCheckStatus'
-      summary: Check health of this service
+            $ref: '#/definitions/models.JsonHealthCheckStatus'
+      summary: Checks health of this service
       tags:
       - Health check
 swagger: "2.0"

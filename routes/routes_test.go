@@ -2,7 +2,7 @@ package routes
 
 import (
 	"app/db"
-	"app/structs"
+	"app/models"
 	"app/utils"
 	"app/validations"
 	"app/weberrors"
@@ -72,7 +72,7 @@ var CreateEventTestCases = []struct {
 }{
 	{
 		description: "Success - default audio/video set",
-		submitedPayload: structs.EventData{
+		submitedPayload: models.EventData{
 			Name:        "event-name",
 			Timestamp:   "2023-04-20T14:00:00Z",
 			Languages:   []string{"English"},
@@ -81,20 +81,22 @@ var CreateEventTestCases = []struct {
 		},
 		dbCreateEventResp: "generated-uuid-string",
 		expectedStatus:    http.StatusCreated,
-		expectedResponse: structs.EventData{
-			Id:           "generated-uuid-string",
-			Name:         "event-name",
-			Timestamp:    "2023-04-20T14:00:00Z",
-			VideoQuality: []string{utils.DEFAULT_RESOLUTION},
-			AudioQuality: []string{utils.DEVAULT_AUDIO},
-			Languages:    []string{"English"},
-			Invitees:     []string{"valid-email@mail.com"},
-			Description:  "event-description",
+		expectedResponse: models.EventResponseData{
+			Id: "generated-uuid-string",
+			EventData: models.EventData{
+				Name:         "event-name",
+				Timestamp:    "2023-04-20T14:00:00Z",
+				VideoQuality: []string{utils.DEFAULT_RESOLUTION},
+				AudioQuality: []string{utils.DEVAULT_AUDIO},
+				Languages:    []string{"English"},
+				Invitees:     []string{"valid-email@mail.com"},
+				Description:  "event-description",
+			},
 		},
 	},
 	{
 		description: "Success - user set audio/video params",
-		submitedPayload: structs.EventData{
+		submitedPayload: models.EventData{
 			Name:         "event-name",
 			Timestamp:    "2023-04-20T14:00:00Z",
 			Languages:    []string{"English"},
@@ -105,15 +107,17 @@ var CreateEventTestCases = []struct {
 		},
 		dbCreateEventResp: "generated-uuid-string",
 		expectedStatus:    http.StatusCreated,
-		expectedResponse: structs.EventData{
-			Id:           "generated-uuid-string",
-			Name:         "event-name",
-			Timestamp:    "2023-04-20T14:00:00Z",
-			VideoQuality: []string{"2160p", "1440p"},
-			AudioQuality: []string{"High", "Mid"},
-			Languages:    []string{"English"},
-			Invitees:     []string{"valid-email@mail.com", "valid-email2@mail.com"},
-			Description:  "event-description",
+		expectedResponse: models.EventResponseData{
+			Id: "generated-uuid-string",
+			EventData: models.EventData{
+				Name:         "event-name",
+				Timestamp:    "2023-04-20T14:00:00Z",
+				VideoQuality: []string{"2160p", "1440p"},
+				AudioQuality: []string{"High", "Mid"},
+				Languages:    []string{"English"},
+				Invitees:     []string{"valid-email@mail.com", "valid-email2@mail.com"},
+				Description:  "event-description",
+			},
 		},
 	},
 	{
@@ -130,7 +134,7 @@ var CreateEventTestCases = []struct {
 	},
 	{
 		description: "Fail - incorrect `name` format",
-		submitedPayload: structs.EventData{
+		submitedPayload: models.EventData{
 			Name:      "event-name????",
 			Timestamp: "2023-04-20T14:00:00Z",
 			Languages: []string{"English"},
@@ -142,7 +146,7 @@ var CreateEventTestCases = []struct {
 	},
 	{
 		description: "Fail - incorrect `email` format",
-		submitedPayload: structs.EventData{
+		submitedPayload: models.EventData{
 			Name:      "event-name",
 			Timestamp: "2023-04-20T14:00:00Z",
 			Languages: []string{"English"},
@@ -154,7 +158,7 @@ var CreateEventTestCases = []struct {
 	},
 	{
 		description: "Fail - incorrect `date` format",
-		submitedPayload: structs.EventData{
+		submitedPayload: models.EventData{
 			Name:      "event-name",
 			Timestamp: "2023-04-20 ??? 14:00:00Z",
 			Languages: []string{"English"},
@@ -166,7 +170,7 @@ var CreateEventTestCases = []struct {
 	},
 	{
 		description: "Fail - incorrect `videoQuality` format",
-		submitedPayload: structs.EventData{
+		submitedPayload: models.EventData{
 			Name:         "event-name",
 			Timestamp:    "2023-04-20T14:00:00Z",
 			VideoQuality: []string{"123p"},
@@ -182,7 +186,7 @@ var CreateEventTestCases = []struct {
 	},
 	{
 		description: "Fail - incorrect `audioQuality` format",
-		submitedPayload: structs.EventData{
+		submitedPayload: models.EventData{
 			Name:         "event-name",
 			Timestamp:    "2023-04-20T14:00:00Z",
 			AudioQuality: []string{"very-nice"},
@@ -198,7 +202,7 @@ var CreateEventTestCases = []struct {
 	},
 	{
 		description: "Fail - field `name` too long; field `invitees` has duplicates",
-		submitedPayload: structs.EventData{
+		submitedPayload: models.EventData{
 			Name:      getRandomAlphaNum(256),
 			Timestamp: "2023-04-20T14:00:00Z",
 			Languages: []string{"English"},
@@ -213,8 +217,8 @@ var CreateEventTestCases = []struct {
 func TestCreateEventRoute(t *testing.T) {
 	for _, testCase := range CreateEventTestCases {
 		t.Run(testCase.description, func(t *testing.T) {
-			db.CreateEvent = func(payload structs.EventData) (string, error) {
-				convertedTestCaseData := testCase.submitedPayload.(structs.EventData)
+			db.CreateEvent = func(payload models.EventData) (string, error) {
+				convertedTestCaseData := testCase.submitedPayload.(models.EventData)
 				if len(convertedTestCaseData.VideoQuality) == 0 {
 					convertedTestCaseData.VideoQuality = []string{utils.DEFAULT_RESOLUTION}
 				}
@@ -238,7 +242,7 @@ var GetEventTestCases = []struct {
 	description                    string
 	submitIdPathParam              string
 	validationsCheckUuidFormatResp bool
-	dbGetEventMockResp             structs.EventData
+	dbGetEventMockResp             models.EventResponseData
 	dbGetEventMockErr              error
 	expectedStatus                 int
 	expectedResp                   interface{}
@@ -247,18 +251,22 @@ var GetEventTestCases = []struct {
 		description:                    "Success",
 		submitIdPathParam:              "90a04b08-d820-4106-8ced-2cbc940728a3",
 		validationsCheckUuidFormatResp: true,
-		dbGetEventMockResp: structs.EventData{
-			Id:   "90a04b08-d820-4106-8ced-2cbc940728a3",
-			Name: "event-name",
+		dbGetEventMockResp: models.EventResponseData{
+			Id: "90a04b08-d820-4106-8ced-2cbc940728a3",
+			EventData: models.EventData{
+				Name: "event-name",
+			},
 		},
 		expectedStatus: http.StatusOK,
-		expectedResp: structs.EventData{
-			Id:   "90a04b08-d820-4106-8ced-2cbc940728a3",
-			Name: "event-name",
+		expectedResp: models.EventResponseData{
+			Id: "90a04b08-d820-4106-8ced-2cbc940728a3",
+			EventData: models.EventData{
+				Name: "event-name",
+			},
 		},
 	},
 	{
-		description:                    "Fail - invalid uuid",
+		description:                    "Fail - invalid uuid - resource not found",
 		submitIdPathParam:              "invalid-uuid-string",
 		validationsCheckUuidFormatResp: false,
 		expectedStatus:                 http.StatusNotFound,
@@ -289,7 +297,7 @@ func TestGetEvent(t *testing.T) {
 				assert.Equal(t, testCase.submitIdPathParam, inputString)
 				return testCase.validationsCheckUuidFormatResp
 			}
-			db.GetEvent = func(id string) (structs.EventData, error) {
+			db.GetEvent = func(id string) (models.EventResponseData, error) {
 				assert.Equal(t, testCase.submitIdPathParam, id)
 				return testCase.dbGetEventMockResp, testCase.dbGetEventMockErr
 			}

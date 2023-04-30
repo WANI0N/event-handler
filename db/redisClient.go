@@ -1,7 +1,7 @@
 package db
 
 import (
-	"app/structs"
+	"app/models"
 	"app/utils"
 	"context"
 	"encoding/json"
@@ -15,9 +15,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// redis is not a backend database and I wouldn't recommend it for storing long term or table/dict data,
+// redis is not a backend database and I would not recommend it for storing long term or table/dict data,
 // but since this repo has only 1 endpoint and any db selected would need to have a database layer
-// I decided to use it since I can demonstrate the layer and unit tests with it and it's easy to setup
+// I decided to use it since I can demonstrate the layer and unit tests with it and it is easy to setup
 
 var redisEndpoint string = os.Getenv("REDIS_ENDPOINT")
 var redisPassword string = os.Getenv("REDIS_PASSWORD")
@@ -40,25 +40,26 @@ func Init() *redis.Client {
 	return rdb
 }
 
-var GetEvent = func(id string) (structs.EventData, error) {
+var GetEvent = func(id string) (models.EventResponseData, error) {
 	result, err := redisClient.Get(ctx, id).Result()
 	if err != nil {
 		if err == redis.Nil {
-			return structs.EventData{}, errors.New("not found")
+			return models.EventResponseData{}, errors.New("not found")
 		}
-		return structs.EventData{}, errors.New(
+		return models.EventResponseData{}, errors.New(
 			"redis connection error",
 		)
 	}
-	var eventData structs.EventData
+	var eventData models.EventResponseData
 	jsonParseErr := json.Unmarshal([]byte(result), &eventData)
 	if jsonParseErr != nil {
-		return structs.EventData{}, jsonParseErr
+		return models.EventResponseData{}, jsonParseErr
 	}
+	eventData.Id = id
 	return eventData, nil
 }
 
-var CreateEvent = func(payload structs.EventData) (string, error) {
+var CreateEvent = func(payload models.EventData) (string, error) {
 	eventId := uuid.NewString()
 	payload.Id = eventId
 	dataAsJsonString, convertErr := utils.GetJsonStringFromStruct(payload)

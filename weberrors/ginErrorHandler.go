@@ -53,6 +53,8 @@ func customJsonAppErrorReporter(errType gin.ErrorType) gin.HandlerFunc {
 				})
 			return
 		case *AppErrorWithCode:
+			logger.Error().Err(err).Msg("Request validation error")
+			//assigning relevant AppErrorWithCode based on context error code
 			ErrorName = err.Code
 			parsedError = &AppError{
 				ErrorName:   err.ErrorName,

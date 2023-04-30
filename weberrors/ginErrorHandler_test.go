@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	"net/http"
 	"net/http/httptest"
@@ -40,10 +39,8 @@ func TestJsonAppErrorReporter(t *testing.T) {
 
 	t.Run("case view ValidationErrors", func(t *testing.T) {
 		errorResponse := func(c *gin.Context) {
-			fmt.Println("JERE")
 			bindEntity := ValidationCheckStruct{}
 			if err := c.ShouldBindJSON(&bindEntity); err != nil {
-				fmt.Println("JERE2")
 				c.Error(err)
 				c.Abort()
 			}

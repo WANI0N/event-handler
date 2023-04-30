@@ -32,7 +32,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "event"
+                    "Event"
                 ],
                 "summary": "Creates event to database",
                 "parameters": [
@@ -42,7 +42,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/structs.EventData"
+                            "$ref": "#/definitions/models.EventData"
                         }
                     }
                 ],
@@ -50,7 +50,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/structs.EventData"
+                            "$ref": "#/definitions/models.EventResponseData"
                         }
                     },
                     "400": {
@@ -80,7 +80,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "event"
+                    "Event"
                 ],
                 "summary": "Retrieves event from database",
                 "parameters": [
@@ -94,7 +94,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.EventResponseData"
+                        }
                     },
                     "404": {
                         "description": "Not Found",
@@ -112,13 +115,13 @@ const docTemplate = `{
             },
             "delete": {
                 "tags": [
-                    "event"
+                    "Event"
                 ],
                 "summary": "Delete event from database",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "\u003ctoken_string_goes_here\u003e",
+                        "description": "\u003ctoken string goes here\u003e",
                         "name": "API-AUTHENTICATION",
                         "in": "header",
                         "required": true
@@ -152,12 +155,12 @@ const docTemplate = `{
                 "tags": [
                     "Health check"
                 ],
-                "summary": "Check health of this service",
+                "summary": "Checks health of this service",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/structs.JsonHealthCheckStatus"
+                            "$ref": "#/definitions/models.JsonHealthCheckStatus"
                         }
                     }
                 }
@@ -165,8 +168,8 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "structs.EventData": {
-            "description": "If not provided, ` + "`" + `videoQuality` + "`" + ` \u0026 ` + "`" + `audioQuality` + "`" + ` default to ` + "`" + `[\"720p\"]` + "`" + ` \u0026 ` + "`" + `[\"Low\"]` + "`" + `, respectively. If provided, first item in the list is default.",
+        "models.EventData": {
+            "description": "If not provided, ` + "`" + `videoQuality` + "`" + ` \u0026 ` + "`" + `audioQuality` + "`" + ` default to ` + "`" + `[\"720p\"]` + "`" + ` \u0026 ` + "`" + `[\"Low\"]` + "`" + `, respectively. If provided, first item in the list is event default.",
             "type": "object",
             "required": [
                 "date",
@@ -177,30 +180,36 @@ const docTemplate = `{
             "properties": {
                 "audioQuality": {
                     "type": "array",
+                    "uniqueItems": true,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "Low",
+                        "Mid",
+                        "High"
+                    ]
                 },
                 "date": {
                     "description": "YYYY-MM-DDTHH:MM:SSZ",
-                    "type": "string"
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
                 },
                 "description": {
                     "type": "string",
                     "maxLength": 512
                 },
-                "id": {
-                    "type": "string"
-                },
                 "invitees": {
-                    "description": "[\"example@mail.com\"]",
                     "type": "array",
                     "maxItems": 100,
                     "minItems": 1,
                     "uniqueItems": true,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "example@mail.com"
+                    ]
                 },
                 "languages": {
                     "type": "array",
@@ -208,23 +217,115 @@ const docTemplate = `{
                     "uniqueItems": true,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "English",
+                        "French"
+                    ]
                 },
                 "name": {
                     "description": "allowed chars: A-Za-z0-9 _-",
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 1
+                    "minLength": 1,
+                    "example": "A event-Name3_x"
                 },
                 "videoQuality": {
                     "type": "array",
+                    "uniqueItems": true,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "720p",
+                        "1080p",
+                        "1440p",
+                        "2160p"
+                    ]
                 }
             }
         },
-        "structs.JsonHealthCheckStatus": {
+        "models.EventResponseData": {
+            "type": "object",
+            "required": [
+                "date",
+                "invitees",
+                "languages",
+                "name"
+            ],
+            "properties": {
+                "audioQuality": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "Low",
+                        "Mid",
+                        "High"
+                    ]
+                },
+                "date": {
+                    "description": "YYYY-MM-DDTHH:MM:SSZ",
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                },
+                "description": {
+                    "type": "string",
+                    "maxLength": 512
+                },
+                "id": {
+                    "type": "string",
+                    "example": "db6bed50-7172-4051-86ab-d1e90705c692"
+                },
+                "invitees": {
+                    "type": "array",
+                    "maxItems": 100,
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "example@mail.com"
+                    ]
+                },
+                "languages": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "English",
+                        "French"
+                    ]
+                },
+                "name": {
+                    "description": "allowed chars: A-Za-z0-9 _-",
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "example": "A event-Name3_x"
+                },
+                "videoQuality": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "720p",
+                        "1080p",
+                        "1440p",
+                        "2160p"
+                    ]
+                }
+            }
+        },
+        "models.JsonHealthCheckStatus": {
             "type": "object",
             "properties": {
                 "deployDate": {
