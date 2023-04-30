@@ -231,7 +231,7 @@ func TestCreateEventRoute(t *testing.T) {
 
 			res := testClient(t).POST("/event").
 				WithJSON(testCase.submitedPayload).Expect()
-
+			res.Header("Content-type").Contains("application/json")
 			res.Status(testCase.expectedStatus)
 			res.JSON().Equal(testCase.expectedResponse)
 		})
@@ -303,7 +303,7 @@ func TestGetEvent(t *testing.T) {
 			}
 			res := testClient(t).GET(
 				fmt.Sprintf("/event/%v", testCase.submitIdPathParam)).Expect()
-
+			res.Header("Content-type").Contains("application/json")
 			res.Status(testCase.expectedStatus)
 			res.JSON().Equal(testCase.expectedResp)
 		})

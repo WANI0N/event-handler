@@ -139,12 +139,8 @@ definitions:
 host: localhost:3000
 info:
   contact:
-    email: marek.beck2@gmail.com
     name: Marek Beck
   description: An event management service API in Go using Gin framework.
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: EventHandler API
   version: 1.0.0
 paths:
@@ -184,7 +180,7 @@ paths:
   /event/{id}:
     delete:
       parameters:
-      - description: <token string goes here>
+      - description: token string value
         in: header
         name: API-AUTHENTICATION
         required: true

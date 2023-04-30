@@ -11,12 +11,7 @@ const docTemplate = `{
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
         "contact": {
-            "name": "Marek Beck",
-            "email": "marek.beck2@gmail.com"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            "name": "Marek Beck"
         },
         "version": "{{.Version}}"
     },
@@ -121,7 +116,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "\u003ctoken string goes here\u003e",
+                        "description": "token string value",
                         "name": "API-AUTHENTICATION",
                         "in": "header",
                         "required": true

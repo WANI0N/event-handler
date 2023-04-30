@@ -105,7 +105,7 @@ func GetEventHandler(ctx *gin.Context) {
 // DeleteEventHandler removes event.
 // @Summary	Delete event from database
 // @Tags		Event
-// @Param API-AUTHENTICATION header 	string 	true 	"<token string goes here>"
+// @Param API-AUTHENTICATION header 	string 	true "token string value"
 // @Param id path string true "Event ID (uuid)"
 // @Success	204
 // @Failure 500 {object} weberrors.AppError
