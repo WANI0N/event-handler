@@ -14,9 +14,6 @@ import (
 // @host		localhost:3000
 // @description    An event management service API in Go using Gin framework.
 // @contact.name  Marek Beck
-// @contact.email marek.beck2@gmail.com
-// @license.name Apache 2.0
-// @license.url  http://www.apache.org/licenses/LICENSE-2.0.html
 func main() {
 	app := gin.New()
 	routes.InitApp(app)

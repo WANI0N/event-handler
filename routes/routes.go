@@ -88,7 +88,6 @@ func GetEventHandler(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if !validations.CheckUuidFormat(id) {
 		utils.AppendContextError(ctx, &weberrors.NotFound)
-		// utils.AppendContextError(ctx, weberrors.ValidationError.ModifyDesc("id", "inv"))
 		return
 	}
 	response, err := db.GetEvent(id)
