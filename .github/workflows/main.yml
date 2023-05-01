@@ -23,12 +23,11 @@ jobs:
     #     echo ${GOROOT}
     #   env:
     #     GOPATH: /home/runner/work/WANI0N/go
-    # - name: Build
-    #   run: |
-    #   go get ./...
-    #   go build -v ./...
-      
-      
+    - name: Build
+      run: |
+      go get ./...
+    
+    # go build -v ./...  
     # - name: Install Redis
     #   run: sudo apt-get install redis-server
     # - name: Start Redis Service
