@@ -20,5 +20,4 @@ jobs:
     - name: Start Redis Service
       run: sudo service redis-server start
     - name: Run unit tests
-      run: ls
       run: go test -cover ./...
