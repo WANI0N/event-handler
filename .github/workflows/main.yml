@@ -25,9 +25,7 @@ jobs:
         GITHUB_WORKSPACE: /home/runner/work/event-handler
         GOPATH: /home/runner/work/WANI0N/go
     - name: Build
-      run: |
-        go mod init \
-        go build -v ./...
+      run: go build -v ./...
       
       env:
         GOPATH: /home/runner/work/WANI0N/go
