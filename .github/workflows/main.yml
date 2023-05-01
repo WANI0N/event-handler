@@ -22,7 +22,7 @@ jobs:
         echo ${GOPATH}
         echo ${GOROOT}
       env:
-        GOPATH: /home/runner/work/woodpecker/go
+        GOPATH: /home/runner/work/WANI0N/go
     - name: Build
       run: |
         cd .. \
