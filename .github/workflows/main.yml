@@ -24,8 +24,7 @@ jobs:
     #   env:
     #     GOPATH: /home/runner/work/WANI0N/go
     - name: Build
-      run: |
-      go get ./...
+      run: go get ./...
     
     # go build -v ./...  
     # - name: Install Redis
