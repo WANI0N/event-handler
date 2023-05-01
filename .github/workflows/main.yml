@@ -22,9 +22,13 @@ jobs:
         echo ${GOPATH}
         echo ${GOROOT}
       env:
+        GITHUB_WORKSPACE: /home/runner/work/event-handler
         GOPATH: /home/runner/work/WANI0N/go
     - name: Build
-      run: go build -v ./...
+      run: |
+        go mod init \
+        go build -v ./...
+      
       env:
         GOPATH: /home/runner/work/WANI0N/go
     # go build -v ./...  
