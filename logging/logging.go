@@ -22,8 +22,6 @@ const (
 	logKey                  = "log"
 )
 
-const contentType = "Content-Type"
-
 func init() {
 	zerolog.LevelFieldName = levelFieldName
 	zerolog.TimeFieldFormat = time.RFC3339Nano
