@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"app/auth"
 	"app/db"
 	"app/models"
 	"app/utils"
@@ -15,6 +16,8 @@ import (
 	"testing"
 	"time"
 
+	testFuncs "app/testing"
+
 	"github.com/gavv/httpexpect"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -23,19 +26,9 @@ import (
 func testClient(t *testing.T) *httpexpect.Expect {
 	os.Setenv("CORS_ORIGIN", "*")
 	app := gin.New()
-
 	InitApp(app)
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Client: &http.Client{
-			Transport: httpexpect.NewBinder(app),
-			Jar:       httpexpect.NewJar(),
-		},
-		Reporter: httpexpect.NewAssertReporter(t),
-		Printers: []httpexpect.Printer{
-			httpexpect.NewDebugPrinter(t, true),
-		},
-	})
-	return e
+
+	return testFuncs.GetTestClient(t, app)
 }
 
 func TestHealthCheckRoute(t *testing.T) {
@@ -321,6 +314,8 @@ func TestGetEvent(t *testing.T) {
 	}
 }
 
+var adminTokenTestString = "admin_token_string"
+
 var DeleteEventTestCases = []struct {
 	description                    string
 	submitIdPathParam              string
@@ -366,6 +361,8 @@ var DeleteEventTestCases = []struct {
 }
 
 func TestDeleteEvent(t *testing.T) {
+	originalToken := auth.AdminToken
+	auth.AdminToken = adminTokenTestString
 	for _, testCase := range DeleteEventTestCases {
 		t.Run(testCase.description, func(t *testing.T) {
 			validations.CheckUuidFormat = func(inputString string) bool {
@@ -387,4 +384,5 @@ func TestDeleteEvent(t *testing.T) {
 			}
 		})
 	}
+	auth.AdminToken = originalToken
 }

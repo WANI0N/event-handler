@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/gavv/httpexpect"
 	"github.com/gin-gonic/gin"
+
+	testFuncs "app/testing"
 )
 
-var adminTokenTestString = "admin_token_string"
+var AdminTokenTestString = "admin_token_string"
 
 var MiddlewareTestCases = []struct {
 	description      string
@@ -35,8 +36,8 @@ var MiddlewareTestCases = []struct {
 }
 
 func TestMiddleware(t *testing.T) {
-	originalToken := adminToken
-	adminToken = adminTokenTestString
+	originalToken := AdminToken
+	AdminToken = AdminTokenTestString
 	for _, testCase := range MiddlewareTestCases {
 		t.Run(testCase.description, func(t *testing.T) {
 			r := gin.New()
@@ -44,16 +45,7 @@ func TestMiddleware(t *testing.T) {
 			r.Any("/", func(ctx *gin.Context) {
 				ctx.JSON(http.StatusOK, nil)
 			})
-			client := httpexpect.WithConfig(httpexpect.Config{
-				Client: &http.Client{
-					Transport: httpexpect.NewBinder(r),
-					Jar:       httpexpect.NewJar(),
-				},
-				Reporter: httpexpect.NewAssertReporter(t),
-				Printers: []httpexpect.Printer{
-					httpexpect.NewDebugPrinter(t, true),
-				},
-			})
+			client := testFuncs.GetTestClient(t, r)
 			res := client.GET("/").
 				WithHeader(utils.API_AUTH_HEADER_KEY, testCase.adminToken).
 				Expect()
@@ -61,5 +53,5 @@ func TestMiddleware(t *testing.T) {
 			res.JSON().Equal(testCase.expectedResponse)
 		})
 	}
-	adminToken = originalToken
+	AdminToken = originalToken
 }
