@@ -38,13 +38,13 @@ var MiddlewareTestCases = []struct {
 func TestMiddleware(t *testing.T) {
 	originalToken := AdminToken
 	AdminToken = AdminTokenTestString
+	r := gin.New()
+	r.Use(Middleware())
+	r.Any("/", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, nil)
+	})
 	for _, testCase := range MiddlewareTestCases {
 		t.Run(testCase.description, func(t *testing.T) {
-			r := gin.New()
-			r.Use(Middleware())
-			r.Any("/", func(ctx *gin.Context) {
-				ctx.JSON(http.StatusOK, nil)
-			})
 			client := testFuncs.GetTestClient(t, r)
 			res := client.GET("/").
 				WithHeader(utils.API_AUTH_HEADER_KEY, testCase.adminToken).
@@ -53,5 +53,12 @@ func TestMiddleware(t *testing.T) {
 			res.JSON().Equal(testCase.expectedResponse)
 		})
 	}
+	t.Run("submit without any header", func(t *testing.T) {
+		client := testFuncs.GetTestClient(t, r)
+		res := client.GET("/").
+			Expect()
+		res.Status(MiddlewareTestCases[1].expectedStatus)
+		res.JSON().Equal(MiddlewareTestCases[1].expectedResponse)
+	})
 	AdminToken = originalToken
 }
