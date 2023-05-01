@@ -25,7 +25,9 @@ jobs:
         GOPATH: /home/runner/work/woodpecker/go
     - name: Build
       run: |
-        cd ..
+        pwd \
+        cd .. \
+        pwd \
         go build -v ./...
       # shell: bash
     # - name: Install Redis
