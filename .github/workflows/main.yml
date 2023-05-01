@@ -7,38 +7,33 @@ jobs:
     name: Run unit tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: 1.20.3
-        fetch-depth: 1
-        path: go/src/github.com/WANI0N/event-handler
-    - name: Debug
-      run: |
-        pwd
-        echo ${HOME}
-        echo ${GITHUB_WORKSPACE}
-        echo ${GOPATH}
-        echo ${GOROOT}
-      env:
-        GITHUB_WORKSPACE: /home/runner/work/event-handler
-        GOPATH: /home/runner/work/WANI0N/go
+        # fetch-depth: 1
+        # path: go/src/github.com/WANI0N/event-handler
+    # - name: Debug
+    #   run: |
+    #     pwd
+    #     echo ${HOME}
+    #     echo ${GITHUB_WORKSPACE}
+    #     echo ${GOPATH}
+    #     echo ${GOROOT}
+    #   env:
+    #     GITHUB_WORKSPACE: /home/runner/work/event-handler
+    #     GOPATH: /home/runner/work/WANI0N/go
     - name: Build
-      run: |
-        pwd
-        echo ${GITHUB_WORKSPACE}
-        go build -v ./...
-      env:
-        GOPATH: /home/runner/work/WANI0N/go
+      run: go build -v ./...
+      # env:
+      #   GOPATH: /home/runner/work/WANI0N/go
     # go build -v ./...  
-    # - name: Install Redis
-    #   run: sudo apt-get install redis-server
-    # - name: Start Redis Service
-    #   run: sudo service redis-server start
+    - name: Install Redis
+      run: sudo apt-get install redis-server
+    - name: Start Redis Service
+      run: sudo service redis-server start
     - name: Run unit tests
-      run: |
-        go get ./... \
-        go test -cover ./...
-      env:
-        GOPATH: /home/runner/work/WANI0N/go
+      run: go test -cover ./...
+      # env:
+      #   GOPATH: /home/runner/work/WANI0N/go
