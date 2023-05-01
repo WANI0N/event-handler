@@ -2,7 +2,7 @@
 Simple gin app for handling events.
 
 ### CI/CD status
-![example workflow](https://github.com/WANI0N/event-handler/actions/workflows/main.yml/badge.svg)
+![example workflow](https://github.com/WANI0N/event-handler/actions/workflows/tests.yml/badge.svg)
 ![example workflow](https://github.com/WANI0N/event-handler/actions/workflows/lint.yml/badge.svg)
 
 ## Setup app
