@@ -18,6 +18,7 @@ jobs:
         pwd \
         ls \
         go build -v ./...
+      shell: bash
     # - name: Install Redis
     #   run: sudo apt-get install redis-server
     # - name: Start Redis Service
