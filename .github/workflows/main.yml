@@ -15,9 +15,6 @@ jobs:
         path: go/src/github.com/WANI0N
     - name: Build
       run: |
-        cd /home/runner/work/event-handler \
-        pwd \
-        ls \
         go build -v ./...
       shell: bash
     # - name: Install Redis
