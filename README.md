@@ -8,7 +8,7 @@ export ADMIN_TOKEN=<insert_any_string>
 export REDIS_HOST=127.0.0.1
 export REDIS_PORT=6379
 ```
-2. in project root directory, run: `go get ./...`
+2. in project's root directory, run: `go get ./...`
 3. install Redis (https://developer.redis.com/create/windows/)
     - run `service redis-server start` (defaults to 127.0.0.1:6379)
     - verify if redis is running by `redis-cli` command
