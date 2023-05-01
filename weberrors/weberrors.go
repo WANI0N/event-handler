@@ -60,8 +60,7 @@ var ValidationErrorToText = func(e validator.FieldError) string {
 		return fmt.Sprintf(
 			"field `%s` contains invalid characters (use A-Za-z0-9 _- only)", field)
 	case "checkTimeFieldFormat":
-		return fmt.Sprint(
-			"field date does not have correct format (use YYYY-MM-DDTHH:MM:SSZ)")
+		return "field `date` does not have correct format (use YYYY-MM-DDTHH:MM:SSZ)"
 	}
 
 	return fmt.Sprintf("field `%s` is invalid", field)

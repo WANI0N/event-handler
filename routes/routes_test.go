@@ -170,7 +170,7 @@ var CreateEventTestCases = []struct {
 		},
 		expectedStatus: http.StatusBadRequest,
 		expectedResponse: weberrors.ParseAppError(weberrors.ValidationError.ChangeDesc(
-			"field date does not have correct format (use YYYY-MM-DDTHH:MM:SSZ)")),
+			"field `date` does not have correct format (use YYYY-MM-DDTHH:MM:SSZ)")),
 	},
 	{
 		description: "Fail - incorrect `videoQuality` format",
