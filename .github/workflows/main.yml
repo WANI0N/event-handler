@@ -25,7 +25,8 @@ jobs:
         GOPATH: /home/runner/work/WANI0N/go
     - name: Build
       run: go get ./...
-    
+      env:
+        GOPATH: /home/runner/work/WANI0N/go
     # go build -v ./...  
     # - name: Install Redis
     #   run: sudo apt-get install redis-server
