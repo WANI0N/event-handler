@@ -25,7 +25,6 @@ jobs:
         GOPATH: /home/runner/work/woodpecker/go
     - name: Build
       run: |
-        pwd \
         cd .. \
         pwd \
         go build -v ./...
@@ -35,6 +34,8 @@ jobs:
     # - name: Start Redis Service
     #   run: sudo service redis-server start
     - name: Run unit tests
-      run: go test -cover ./...
+      run: |
+        pwd \
+        go test -cover ./...
       # env:
       #   GOPATH: /home/runner/work/event-handler/go
